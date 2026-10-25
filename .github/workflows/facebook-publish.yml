@@ -1,0 +1,43 @@
+name: Facebook Photo Publisher
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs at 10:00, 15:00, and 19:00 India time (UTC+5:30).
+    # GitHub cron uses UTC: 04:30, 09:30, 13:30 UTC.
+    - cron: "30 4,9,13 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: facebook-photo-publisher
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Publish next queued photo
+        env:
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+          FACEBOOK_GRAPH_API_VERSION: "v23.0"
+        run: python scripts/publish_next.py
+
+      - name: Save queue state
+        if: always()
+        run: |
+          echo "GitHub Actions does not persist workspace changes between runs."
+          echo "Queue state is committed by the script only if a GitHub token workflow is added."
