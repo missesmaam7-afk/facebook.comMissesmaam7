@@ -2,36 +2,29 @@
 
 Repository: `missesmaam7-afk/facebook.comMissesmaam7`
 
-## What this currently does
-- GitHub Actions runs at 10:00, 15:00, and 19:00 India Standard Time.
-- Each run takes the first `pending` item in `queue/posts.json`, uploads its local image to the configured Facebook Page, and records the returned media/post ID.
-- Queue state is committed back to the repository to avoid reposting the same pending item on later runs.
-- Manual testing is available from **Actions → Facebook Photo Publisher → Run workflow**.
+## What the workflow does
+- GitHub Actions is scheduled for 10:00, 15:00, and 19:00 India Standard Time.
+- If `OPENAI_API_KEY` is configured, it generates one original square image and one Hinglish caption per run.
+- It then uploads the next pending image/caption to the configured Facebook Page.
+- It records queue state to reduce accidental repeat posts.
+- Manual test: **Actions → Facebook Photo Publisher → Run workflow**.
 
 ## Required GitHub Actions secrets
 Open **Settings → Secrets and variables → Actions → New repository secret** and add:
-- `FACEBOOK_PAGE_ID`: the numeric Facebook Page ID for the exact target Page.
-- `FACEBOOK_PAGE_ACCESS_TOKEN`: a valid Page access token authorized for publishing photos to that Page.
+- `FACEBOOK_PAGE_ID`: `436135029576334` for the Page shown in the Meta Business Suite screenshot; verify this is the intended Page.
+- `FACEBOOK_PAGE_ACCESS_TOKEN`: a valid Page access token with publishing permission for that Page.
+- `OPENAI_API_KEY`: optional for AI generation, but required if you want the workflow to generate new images and captions automatically. OpenAI API usage may be billed; ChatGPT plan access does not automatically include API credits.
 
-Never commit access tokens into repository files. Confirm the token has the required Meta permissions and is issued for the intended Page. Do not use a personal user token where a Page token is required.
+Never paste tokens or API keys into code, screenshots, or chat. If a token was exposed in a screenshot, revoke/regenerate it.
 
-## Queue format
-Add image files under `assets/queue/` and add entries to `queue/posts.json` with:
-- `image`: repository-relative image path, e.g. `assets/queue/post-001.jpg`
-- `caption`: caption and hashtags
-- `status`: `pending`
+## Schedule
+The UTC cron `30 4,9,13 * * *` corresponds to 10:00, 15:00, and 19:00 IST. GitHub Actions may start a little late due to queueing.
 
-Use unique entries and verify each image/caption before scheduling. Only add media you have rights to publish.
+## If you want zero API spend
+Leave `OPENAI_API_KEY` unset and add your own image files plus captions to `queue/posts.json`. The workflow can publish queued posts, but it will not generate AI images/captions without a generation service.
 
-## Important limitations
-This is a scheduled publisher for **already-created images and captions**. It does not yet generate AI images or captions. That requires a separate generation provider or a self-hosted model and its own credentials/runtime; free tiers and usage limits vary. The workflow is not active for publishing until the correct Page ID and valid Page access token are added and a test run succeeds.
-
-The schedule is UTC-based and may be delayed by GitHub Actions queueing. Avoid running the workflow manually at the same time as a scheduled run.
-
-
-## Current implementation status
-- Scheduled publishing code is present, but no Facebook secrets have been configured by this repository workflow.
-- The queue starts empty. Add real image files and matching queue entries before enabling a publishing test.
-- AI image generation is not included in this version. Captions are supplied in queue entries; there is no caption-generation model connected yet.
-- Do not add secrets to code or JSON files.
-- The repository was reported as Public when inspected. Change it to Private in Settings → General → Danger Zone → Change repository visibility before adding any operational configuration.
+## Before enabling
+- Make the repository **Private** (Settings → General → Danger Zone) to avoid exposing operational details.
+- Add the correct Page ID and a valid Page access token as GitHub Actions secrets.
+- Test manually once and check the Actions log. Do not assume publishing works until the run succeeds and the post appears on the Page.
+- Only publish images you have rights to use. The generator asks for original images and does not imitate a real person's identity.
