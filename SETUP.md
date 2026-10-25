@@ -27,3 +27,11 @@ Use unique entries and verify each image/caption before scheduling. Only add med
 This is a scheduled publisher for **already-created images and captions**. It does not yet generate AI images or captions. That requires a separate generation provider or a self-hosted model and its own credentials/runtime; free tiers and usage limits vary. The workflow is not active for publishing until the correct Page ID and valid Page access token are added and a test run succeeds.
 
 The schedule is UTC-based and may be delayed by GitHub Actions queueing. Avoid running the workflow manually at the same time as a scheduled run.
+
+
+## Current implementation status
+- Scheduled publishing code is present, but no Facebook secrets have been configured by this repository workflow.
+- The queue starts empty. Add real image files and matching queue entries before enabling a publishing test.
+- AI image generation is not included in this version. Captions are supplied in queue entries; there is no caption-generation model connected yet.
+- Do not add secrets to code or JSON files.
+- The repository was reported as Public when inspected. Change it to Private in Settings → General → Danger Zone → Change repository visibility before adding any operational configuration.
