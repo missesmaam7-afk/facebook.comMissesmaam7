@@ -3,12 +3,11 @@ name: Facebook Photo Publisher
 on:
   workflow_dispatch:
   schedule:
-    # Runs at 10:00, 15:00, and 19:00 India time (UTC+5:30).
-    # GitHub cron uses UTC: 04:30, 09:30, 13:30 UTC.
+    # 10:00, 15:00, 19:00 India Standard Time (UTC+5:30).
     - cron: "30 4,9,13 * * *"
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: facebook-photo-publisher
@@ -36,8 +35,14 @@ jobs:
           FACEBOOK_GRAPH_API_VERSION: "v23.0"
         run: python scripts/publish_next.py
 
-      - name: Save queue state
-        if: always()
+      - name: Persist queue state
         run: |
-          echo "GitHub Actions does not persist workspace changes between runs."
-          echo "Queue state is committed by the script only if a GitHub token workflow is added."
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add queue/posts.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Record Facebook publishing queue state"
+            git push
+          else
+            echo "Queue unchanged; nothing to commit."
+          fi
