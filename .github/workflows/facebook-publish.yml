@@ -46,6 +46,7 @@ jobs:
           git add queue/posts.json assets/queue/
           if ! git diff --cached --quiet; then
             git commit -m "Save Facebook publishing queue and generated image"
+            git pull --rebase origin main
             git push
           else
             echo "Queue and assets unchanged; nothing to commit."
