@@ -85,10 +85,22 @@ def main():
         print("A pending post already exists; skipping generation to avoid duplicate queue entries.")
         return
 
+    # Accept plain Base64, wrapped Base64 with whitespace, or a data:image/...;base64, prefix.
+    normalized_reference = reference_b64.strip()
+    if normalized_reference.lower().startswith("data:") and "," in normalized_reference:
+        header, normalized_reference = normalized_reference.split(",", 1)
+        if ";base64" not in header.lower():
+            raise RuntimeError("FACE_REFERENCE_IMAGE_BASE64 data URL must use base64 encoding.")
+    normalized_reference = "".join(normalized_reference.split())
+
     try:
-        reference_bytes = base64.b64decode(reference_b64, validate=True)
+        reference_bytes = base64.b64decode(normalized_reference, validate=True)
     except Exception as exc:
-        raise RuntimeError("FACE_REFERENCE_IMAGE_BASE64 is not valid base64.") from exc
+        raise RuntimeError(
+            "FACE_REFERENCE_IMAGE_BASE64 is malformed. Recreate it from the original JPG/PNG "
+            using PowerShell [Convert]::ToBase64String(...), then save only the Base64 output "
+            "as the GitHub secret (no quotes, filename, or command text)."
+        ) from exc
 
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     ASSET_DIR.mkdir(parents=True, exist_ok=True)
