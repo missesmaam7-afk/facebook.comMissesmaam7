@@ -60,7 +60,10 @@ jobs:
           missing = [key for key in required if not os.getenv(key, "").strip()]
           if missing:
               raise SystemExit("Missing GitHub Actions secrets: " + ", ".join(missing))
-          print("All required secrets are configured.")
+          pollinations_key = os.getenv("POLLINATIONS_API_KEY", "").strip()
+          if not pollinations_key.startswith("sk_"):
+              raise SystemExit("POLLINATIONS_API_KEY must be a Pollinations server-side secret key beginning with sk_. Update the repository secret; never print or commit the key.")
+          print("All required secrets are present; Pollinations key format looks correct.")
           PY
 
       - name: Generate reference-guided AI portrait
