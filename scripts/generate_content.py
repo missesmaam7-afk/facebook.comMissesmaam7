@@ -108,8 +108,8 @@ def main():
 
     # Validate the decoded payload before contacting the image provider.
     # A real JPEG starts with FF D8 FF; a PNG starts with the 8-byte PNG signature.
-    is_jpeg = reference_bytes.startswith(b"\\xff\\xd8\\xff")
-    is_png = reference_bytes.startswith(b"\\x89PNG\\r\\n\\x1a\\n")
+    is_jpeg = reference_bytes.startswith(bytes([0xFF, 0xD8, 0xFF]))
+    is_png = reference_bytes.startswith(bytes([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]))
     if not (is_jpeg or is_png):
         preview = reference_bytes[:16].hex(" ")
         raise RuntimeError(
