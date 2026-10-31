@@ -46,6 +46,10 @@ def generate_portrait(api_key: str, reference_bytes: bytes, out_path: Path) -> N
         data={"prompt": PROMPT, "model": MODEL, "size": "1024x1024"},
         timeout=300,
     )
+    if response.status_code == 401:
+        raise RuntimeError("Pollinations rejected POLLINATIONS_API_KEY (HTTP 401). The GitHub secret is missing, invalid, expired, or not a server-side sk_ secret key. Create a new secret key at https://enter.pollinations.ai/keys, update Settings > Secrets and variables > Actions > POLLINATIONS_API_KEY, then rerun the workflow. The key was not printed.")
+    if response.status_code == 402:
+        raise RuntimeError("Pollinations authenticated the API key but the account or key budget is exhausted (HTTP 402). Check the Pollinations balance and key budget at https://enter.pollinations.ai/keys.")
     if not response.ok:
         raise RuntimeError(f"Pollinations image editing failed ({response.status_code}): {response.text[:1200]}")
 
@@ -77,7 +81,9 @@ def main():
     api_key = os.environ.get("POLLINATIONS_API_KEY", "").strip()
     reference_b64 = os.environ.get("FACE_REFERENCE_IMAGE_BASE64", "").strip()
     if not api_key:
-        raise RuntimeError("Missing POLLINATIONS_API_KEY GitHub Actions secret.")
+        raise RuntimeError("Missing POLLINATIONS_API_KEY GitHub Actions secret. Create a secret key at https://enter.pollinations.ai/keys and save it in GitHub Actions Secrets.")
+    if not api_key.startswith("sk_"):
+        raise RuntimeError("POLLINATIONS_API_KEY must be a Pollinations server-side secret key beginning with sk_. Do not use a pk_ App Key or paste the key into repository files.")
     if not reference_b64:
         raise RuntimeError("Missing FACE_REFERENCE_IMAGE_BASE64 GitHub Actions secret. Add a compressed reference photo as a secret; do not commit a private face photo to this repository.")
 
