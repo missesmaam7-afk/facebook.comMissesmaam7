@@ -106,7 +106,26 @@ def main():
             "with only the Base64 text copied from PowerShell; do not include labels or commands."
         ) from exc
 
-    print(f"Reference image Base64 decoded successfully ({len(reference_bytes)} bytes).")
+    # Validate the decoded payload before contacting the image provider.
+    # A real JPEG starts with FF D8 FF; a PNG starts with the 8-byte PNG signature.
+    is_jpeg = reference_bytes.startswith(b"\\xff\\xd8\\xff")
+    is_png = reference_bytes.startswith(b"\\x89PNG\\r\\n\\x1a\\n")
+    if not (is_jpeg or is_png):
+        preview = reference_bytes[:16].hex(" ")
+        raise RuntimeError(
+            "FACE_REFERENCE_IMAGE_BASE64 is not the image file. "
+            f"It decoded to only {len(reference_bytes)} bytes (first bytes: {preview}). "
+            "The GitHub secret likely contains the wrong clipboard text. "
+            "Recreate it from reference-face-small.jpg and update the existing secret "
+            "by pasting the full clipboard contents."
+        )
+    if len(reference_bytes) < 256:
+        raise RuntimeError(
+            f"Reference image is unexpectedly small ({len(reference_bytes)} bytes); "
+            "recreate FACE_REFERENCE_IMAGE_BASE64 from the actual JPG/PNG file."
+        )
+
+    print(f"Reference image validated ({len(reference_bytes)} bytes; {'JPEG' if is_jpeg else 'PNG'}).")
 
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     ASSET_DIR.mkdir(parents=True, exist_ok=True)
