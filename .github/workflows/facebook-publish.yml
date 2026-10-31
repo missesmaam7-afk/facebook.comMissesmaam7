@@ -30,7 +30,7 @@ jobs:
 
       - name: Generate a reference-guided AI portrait and caption
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
           FACE_REFERENCE_IMAGE_BASE64: ${{ secrets.FACE_REFERENCE_IMAGE_BASE64 }}
         run: python scripts/generate_content.py
 
