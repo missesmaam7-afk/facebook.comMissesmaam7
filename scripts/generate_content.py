@@ -86,21 +86,26 @@ def main():
         return
 
     # Accept plain Base64, wrapped Base64 with whitespace, or a data:image/...;base64, prefix.
-    normalized_reference = reference_b64.strip()
+    normalized_reference = reference_b64.strip().strip('"').strip("'")
     if normalized_reference.lower().startswith("data:") and "," in normalized_reference:
-        header, normalized_reference = normalized_reference.split(",", 1)
-        if ";base64" not in header.lower():
-            raise RuntimeError("FACE_REFERENCE_IMAGE_BASE64 data URL must use base64 encoding.")
+        normalized_reference = normalized_reference.split(",", 1)[1]
     normalized_reference = "".join(normalized_reference.split())
+    # Tolerate accidental copied quotes or punctuation around the Base64 payload.
+    normalized_reference = re.sub(r"[^A-Za-z0-9+/=_-]", "", normalized_reference)
+    normalized_reference = normalized_reference.replace("-", "+").replace("_", "/")
+    normalized_reference += "=" * ((4 - len(normalized_reference) % 4) % 4)
 
     try:
         reference_bytes = base64.b64decode(normalized_reference, validate=True)
+        if not reference_bytes:
+            raise ValueError("Decoded image is empty.")
     except Exception as exc:
         raise RuntimeError(
-            "FACE_REFERENCE_IMAGE_BASE64 is malformed. Recreate it from the original JPG/PNG "
-            "using PowerShell [Convert]::ToBase64String(...), then save only the Base64 output "
-            "as the GitHub secret (no quotes, filename, or command text)."
+            "FACE_REFERENCE_IMAGE_BASE64 could not be decoded. Update the GitHub secret "
+            "with only the Base64 text copied from PowerShell; do not include labels or commands."
         ) from exc
+
+    print(f"Reference image Base64 decoded successfully ({len(reference_bytes)} bytes).")
 
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     ASSET_DIR.mkdir(parents=True, exist_ok=True)
