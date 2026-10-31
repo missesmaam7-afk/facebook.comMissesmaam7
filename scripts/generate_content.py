@@ -98,7 +98,7 @@ def main():
     except Exception as exc:
         raise RuntimeError(
             "FACE_REFERENCE_IMAGE_BASE64 is malformed. Recreate it from the original JPG/PNG "
-            using PowerShell [Convert]::ToBase64String(...), then save only the Base64 output "
+            "using PowerShell [Convert]::ToBase64String(...), then save only the Base64 output "
             "as the GitHub secret (no quotes, filename, or command text)."
         ) from exc
 
