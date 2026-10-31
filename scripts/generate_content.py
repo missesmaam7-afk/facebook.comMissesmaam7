@@ -97,13 +97,13 @@ def main():
 
     caption = random.choice(CAPTIONS)
     queue.append({
-        "image": str(image_path.relative_to(ROOT)).replace("\\\\", "/"),
+        "image": str(image_path.relative_to(ROOT)).replace("\\", "/"),
         "caption": caption,
         "status": "pending",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "generator": f"Pollinations/{MODEL}",
     })
-    QUEUE_FILE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    QUEUE_FILE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Generated a reference-guided portrait with Pollinations: {image_path.name}")
 
 if __name__ == "__main__":
