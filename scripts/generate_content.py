@@ -3,6 +3,7 @@ import base64
 import json
 import os
 import random
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from io import BytesIO
@@ -23,25 +24,28 @@ CAPTIONS = [
     "Khud par bharosa rakho 💗 Tumhari kahani apni jagah khaas hai. #Confidence #BeYourself",
 ]
 
+BATCH_SIZE = 4
+IMAGE_SIZE = "1024x1536"  # Full-resolution portrait orientation; saved without downscaling.
+
 PROMPT = """Create an ultra-photorealistic luxury beauty-campaign portrait for the Missesmaam7 Facebook page, using the uploaded photo as the primary identity reference.
-CRITICAL IDENTITY PRESERVATION: show the same adult woman from the reference photo. Preserve her recognizable facial identity, face shape, eyes, eyebrows, nose, lips, skin tone, age, and natural facial proportions. Do not change her ethnicity or turn her into a different person. Do not imitate a fictional or unrelated face. Keep realistic pores, fine skin texture, natural asymmetry, and believable anatomy.
-BEAUTY CAMPAIGN LOOK: front-facing or gentle three-quarter portrait, warm genuine smile with natural teeth when appropriate, expressive eyes, softly defined brows, natural glossy lips, subtle blush, refined understated earrings, elegant polished styling. Premium luxury fashion editorial, flattering soft studio lighting, warm creamy or softly coloured background, shallow depth of field, cinematic bokeh, high-end 85mm portrait-lens aesthetic, crisp eyes, realistic skin texture, refined HDR-like tonal detail without artificial smoothing.
-For every new post, vary the hairstyle arrangement, tasteful outfit and neckline, accessory, smile/expression, background tone, lighting direction, and camera framing while retaining this consistent premium beauty-campaign aesthetic and the same recognizable reference identity. Use tasteful, non-explicit clothing.
-Ultra-photorealistic DSLR finish, natural colour grading, detailed eyes and hair, realistic facial proportions. No text, captions, logos, watermarks, extra people, collage, borders, distortions, plastic skin, cartoon, illustration, or CGI. Exact identity matching cannot be guaranteed.""" 
+CRITICAL IDENTITY PRESERVATION: depict the same adult woman from the reference photo. Preserve her recognizable facial identity, face shape, eyes, eyebrows, nose, lips, skin tone, age, and natural facial proportions. Do not turn her into a different person or change her ethnicity. Keep realistic pores, fine skin texture, natural asymmetry, and believable anatomy.
+BEAUTY CAMPAIGN LOOK: premium luxury fashion editorial, expressive eyes, natural glossy lips, subtle blush, refined understated earrings, tasteful elegant outfit, flattering soft studio or cinematic portrait lighting, shallow depth of field, creamy or softly coloured background, crisp eyes, realistic skin texture, high-end 85mm portrait-lens aesthetic.
+For every image, vary the outfit, hairstyle arrangement, accessories, expression, background, lighting direction, and camera framing. Each image in the same batch must have a visibly different styling concept, while retaining the same recognizable reference identity. Use tasteful, non-explicit clothing.
+Ultra-photorealistic DSLR finish, natural colour grading, detailed eyes and hair, realistic facial proportions. No text, captions, logos, watermarks, extra people, collage, borders, distortions, plastic skin, cartoon, illustration, or CGI. Exact identity matching cannot be guaranteed."""
 
 STYLE_PRESETS = [
-    {"id":"cream-pearl","name":"Cream studio and pearls","prompt":"warm creamy studio background, ivory satin elegant outfit, minimal pearl earrings, soft front studio light, gentle radiant smile, close beauty portrait"},
-    {"id":"champagne-glow","name":"Champagne luxury campaign","prompt":"soft champagne-beige background, champagne satin outfit, delicate gold earrings, warm diffused key light, elegant confident smile, head-and-shoulders framing"},
-    {"id":"rose-editorial","name":"Rose editorial","prompt":"muted dusty-rose studio background, refined blush-pink outfit, tiny crystal earrings, soft peach blush, luminous side lighting, close-up editorial portrait"},
-    {"id":"ivory-window","name":"Ivory window light","prompt":"ivory cream background with soft window-light falloff, elegant white outfit, subtle pearl studs, natural candid smile, three-quarter beauty portrait"},
-    {"id":"mocha-luxe","name":"Mocha luxury portrait","prompt":"warm mocha-brown seamless background, sophisticated cocoa outfit, delicate gold jewellery, soft cinematic key light, poised expression, 85mm headshot"},
-    {"id":"soft-lilac","name":"Soft lilac beauty","prompt":"pale lilac studio background, elegant lavender outfit, minimal silver earrings, soft flattering studio light, bright natural smile, close portrait"},
-    {"id":"sage-elegance","name":"Sage elegance","prompt":"muted sage-green background, refined cream outfit, understated earrings, luminous diffused light, relaxed warm smile, head-and-shoulders composition"},
-    {"id":"midnight-editorial","name":"Midnight editorial","prompt":"deep muted navy studio background, elegant black satin outfit with tasteful neckline, tiny pearl earrings, controlled softbox lighting, sophisticated expression"},
-    {"id":"peach-campaign","name":"Peach beauty campaign","prompt":"warm pale-peach background, elegant peach-toned outfit, subtle gold studs, soft peach blush, radiant genuine smile, close luxury beauty framing"},
-    {"id":"silver-softbox","name":"Silver softbox portrait","prompt":"soft warm-grey studio background, elegant dove-grey outfit, minimal silver earrings, clean softbox catchlights, polished natural smile, crisp close-up"},
-    {"id":"sunlit-cream","name":"Sunlit cream editorial","prompt":"sunlit creamy beige background, elegant pastel outfit, delicate pearl accessories, warm natural sunlight, relaxed joyful smile, premium fashion portrait"},
-    {"id":"classic-white","name":"Classic white campaign","prompt":"clean warm-white studio background, refined white satin outfit, tiny pearl earrings, soft frontal beauty lighting, serene genuine smile, close-up portrait"}
+    {"id":"cream-pearl","name":"Cream studio and pearls","prompt":"warm creamy studio background, ivory satin elegant outfit, minimal pearl earrings, soft frontal beauty light, radiant genuine smile, close beauty portrait"},
+    {"id":"champagne-luxe","name":"Champagne luxury","prompt":"champagne-beige studio background, champagne satin outfit, delicate gold earrings, warm diffused light, elegant confident smile, head-and-shoulders portrait"},
+    {"id":"rose-editorial","name":"Rose editorial","prompt":"muted dusty-rose background, refined blush-pink outfit, tiny crystal earrings, soft peach blush, luminous side lighting, close editorial portrait"},
+    {"id":"ivory-window","name":"Ivory window light","prompt":"ivory cream background with soft window-light falloff, elegant white outfit, pearl studs, natural candid smile, three-quarter portrait"},
+    {"id":"mocha-luxe","name":"Mocha luxury","prompt":"warm mocha-brown seamless background, sophisticated cocoa outfit, delicate gold jewellery, cinematic soft key light, poised expression"},
+    {"id":"soft-lilac","name":"Soft lilac beauty","prompt":"pale lilac studio background, elegant lavender outfit, minimal silver earrings, flattering soft light, bright natural smile"},
+    {"id":"sage-elegance","name":"Sage elegance","prompt":"muted sage-green background, refined cream outfit, understated earrings, luminous diffused light, relaxed warm smile"},
+    {"id":"midnight-editorial","name":"Midnight editorial","prompt":"deep muted navy studio background, elegant dark satin outfit with tasteful neckline, pearl earrings, controlled softbox lighting, sophisticated expression"},
+    {"id":"peach-campaign","name":"Peach beauty campaign","prompt":"warm pale-peach background, elegant peach-toned outfit, subtle gold studs, soft peach blush, radiant genuine smile"},
+    {"id":"silver-softbox","name":"Silver softbox portrait","prompt":"soft warm-grey studio background, dove-grey outfit, minimal silver earrings, clean softbox catchlights, polished natural smile"},
+    {"id":"sunlit-cream","name":"Sunlit cream editorial","prompt":"sunlit creamy beige background, elegant pastel outfit, delicate pearl accessories, warm natural sunlight, relaxed joyful smile"},
+    {"id":"classic-white","name":"Classic white campaign","prompt":"clean warm-white studio background, refined white satin outfit, tiny pearl earrings, soft frontal beauty lighting, serene genuine smile"}
 ]
 
 def generate_portrait(api_key: str, reference_bytes: bytes, out_path: Path, prompt: str) -> None:
@@ -59,7 +63,7 @@ def generate_portrait(api_key: str, reference_bytes: bytes, out_path: Path, prom
         API_URL,
         headers={"Authorization": f"Bearer {api_key}"},
         files={"image": ("face-reference.png" if mime == "image/png" else "face-reference.jpg", reference_bytes, mime)},
-        data={"prompt": prompt, "model": MODEL, "size": "1024x1024", "seed": str(random.randint(1, 2147483646))},
+        data={"prompt": prompt, "model": MODEL, "size": IMAGE_SIZE, "quality": "high", "seed": str(random.randint(1, 2147483646))},
         timeout=300,
     )
     if response.status_code == 401:
@@ -149,26 +153,51 @@ def main():
 
     print(f"Reference image validated ({len(reference_bytes)} bytes; {'JPEG' if is_jpeg else 'PNG'}).")
 
-    recent_style_ids = {item.get("style_id") for item in queue if item.get("style_id") and item.get("status") in ("pending", "published")}
-    available_styles = [style for style in STYLE_PRESETS if style["id"] not in recent_style_ids] or STYLE_PRESETS.copy()
-    selected_style = random.choice(available_styles)
-    prompt = PROMPT + "\n\nUnique campaign direction for this post: " + selected_style["prompt"] + ". Make this image visibly distinct from recent posts while preserving the same reference identity and luxury beauty-campaign look."
+    recent_style_ids = {
+        item.get("style_id") for item in queue
+        if item.get("style_id") and item.get("status") in ("pending", "published")
+    }
+    available_styles = [style for style in STYLE_PRESETS if style["id"] not in recent_style_ids]
+    if len(available_styles) < BATCH_SIZE:
+        # Refill from the full pool, while keeping this batch itself unique.
+        used_in_batch = set()
+        while len(available_styles) < BATCH_SIZE:
+            candidate = random.choice([s for s in STYLE_PRESETS if s["id"] not in used_in_batch])
+            available_styles.append(candidate)
+            used_in_batch.add(candidate["id"])
+    selected_styles = random.sample(available_styles, BATCH_SIZE)
 
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     ASSET_DIR.mkdir(parents=True, exist_ok=True)
-    image_path = ASSET_DIR / f"portrait-{stamp}.jpg"
-    generate_portrait(api_key, reference_bytes, image_path, prompt)
-
-    caption = random.choice(CAPTIONS)
-    queue.append({
-        "image": str(image_path.relative_to(ROOT)).replace("\\", "/"),
-        "caption": caption,
-        "status": "pending",
-        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-        "generator": f"Pollinations/{MODEL}",
-        "style_id": selected_style["id"],
-        "style_name": selected_style["name"],
-    })
+    for index, selected_style in enumerate(selected_styles, start=1):
+        prompt = (
+            PROMPT
+            + "\\n\\nDistinct style for this image: "
+            + selected_style["prompt"]
+            + ". Make this image visibly different from the other images in this batch. "
+              "Keep the same reference identity, premium beauty-campaign photography, "
+              "full portrait framing, and natural realistic skin."
+        )
+        image_path = ASSET_DIR / f"portrait-{stamp}-{index:02d}-{selected_style['id']}.jpg"
+        print(f"Generating image {index}/{BATCH_SIZE}: {selected_style['name']}")
+        generate_portrait(api_key, reference_bytes, image_path, prompt)
+        queue.append({
+            "image": str(image_path.relative_to(ROOT)).replace("\\\\", "/"),
+            "caption": random.choice(CAPTIONS),
+            "status": "pending",
+            "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+            "generator": f"Pollinations/{MODEL}",
+            "style_id": selected_style["id"],
+            "style_name": selected_style["name"],
+            "batch_id": stamp,
+            "batch_index": index,
+            "batch_size": BATCH_SIZE,
+            "image_size": IMAGE_SIZE,
+        })
+        # Gentle spacing between provider calls to reduce rate-limit/transient errors.
+        if index < BATCH_SIZE:
+            time.sleep(2)
+    print(f"Generated {BATCH_SIZE} full-resolution, individually styled portraits in batch {stamp}.")
     QUEUE_FILE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Generated a reference-guided portrait with Pollinations: {image_path.name}")
 
