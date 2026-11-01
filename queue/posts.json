@@ -144,7 +144,7 @@
   {
     "image": "assets/queue/portrait-20261101-003553-02-silver-softbox.jpg",
     "caption": "Apni khushi ko waqt do ✨ Har din ek nayi shuruaat ka mauka deta hai. #DailyThoughts #GoodVibes",
-    "status": "pending",
+    "status": "published",
     "generated_at_utc": "2026-11-01T00:36:11.878006+00:00",
     "generator": "Pollinations/black-forest-labs/flux.1-kontext-pro",
     "style_id": "silver-softbox",
@@ -152,7 +152,9 @@
     "batch_id": "20261101-003553",
     "batch_index": 2,
     "batch_size": 4,
-    "image_size": "1024x1536"
+    "image_size": "1024x1536",
+    "facebook_post_id": "436135029576334_122231985326518204",
+    "published_at_utc": "2026-11-01T00:41:50.881062+00:00"
   },
   {
     "image": "assets/queue/portrait-20261101-003553-03-cream-pearl.jpg",
