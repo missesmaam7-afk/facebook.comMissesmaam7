@@ -28,7 +28,70 @@ CRITICAL IDENTITY PRESERVATION: depict the same adult woman as in the reference.
 Create a fresh everyday editorial portrait with a different tasteful outfit, pose, background/location, and natural lighting. DSLR photography, natural Indian fashion/lifestyle aesthetic, realistic light and detail.
 Safe, non-explicit, non-vulgar clothing and pose. No text, captions, logos, watermarks, collages, or extra people. Square 1:1 composition suitable for a Facebook photo post. Prioritize facial resemblance over dramatic changes. Exact identity cannot be guaranteed."""
 
-def generate_portrait(api_key: str, reference_bytes: bytes, out_path: Path) -> None:
+STYLE_PRESETS = [
+    {
+        "id": "garden",
+        "name": "Sunlit garden",
+        "prompt": "flowering garden, pastel floral outfit, morning sunlight, candid three-quarter pose"
+    },
+    {
+        "id": "heritage",
+        "name": "Heritage courtyard",
+        "prompt": "Indian haveli courtyard, teal traditional outfit, sandstone arches, late-afternoon light"
+    },
+    {
+        "id": "studio",
+        "name": "Minimal studio",
+        "prompt": "warm beige studio, ivory outfit, softbox lighting, elegant seated pose"
+    },
+    {
+        "id": "monsoon",
+        "name": "Monsoon window",
+        "prompt": "rainy window setting, sage outfit, diffused daylight, relaxed seated pose"
+    },
+    {
+        "id": "rooftop",
+        "name": "Golden-hour rooftop",
+        "prompt": "city rooftop at golden hour, rose outfit, skyline bokeh, candid portrait"
+    },
+    {
+        "id": "coastal",
+        "name": "Coastal breeze",
+        "prompt": "coastal promenade, powder-blue outfit, soft seaside daylight, relaxed pose"
+    },
+    {
+        "id": "cafe",
+        "name": "Book cafe",
+        "prompt": "warm book cafe, maroon outfit, window light, candid lifestyle portrait"
+    },
+    {
+        "id": "botanical",
+        "name": "Botanical conservatory",
+        "prompt": "glass conservatory, tropical plants, cream-and-green outfit, filtered daylight"
+    },
+    {
+        "id": "festive",
+        "name": "Festive lantern evening",
+        "prompt": "festive courtyard, distant warm lanterns, wine-coloured traditional outfit, evening portrait"
+    },
+    {
+        "id": "urban",
+        "name": "Pastel urban editorial",
+        "prompt": "pastel modern architecture, lavender outfit, bright soft daylight, fashion editorial"
+    },
+    {
+        "id": "terrace",
+        "name": "Terrace morning",
+        "prompt": "sunlit terrace, potted plants, peach outfit, fresh morning light, smiling candid pose"
+    },
+    {
+        "id": "gallery",
+        "name": "Modern art gallery",
+        "prompt": "minimal art gallery, charcoal outfit, directional lighting, poised editorial portrait"
+    }
+]
+
+def generate_portrait(api_key: str, reference_bytes: bytes, out_path: Path, prompt: str) -> None:
     try:
         with Image.open(BytesIO(reference_bytes)) as im:
             fmt = im.format
@@ -43,7 +106,7 @@ def generate_portrait(api_key: str, reference_bytes: bytes, out_path: Path) -> N
         API_URL,
         headers={"Authorization": f"Bearer {api_key}"},
         files={"image": ("face-reference.png" if mime == "image/png" else "face-reference.jpg", reference_bytes, mime)},
-        data={"prompt": PROMPT, "model": MODEL, "size": "1024x1024"},
+        data={"prompt": prompt, "model": MODEL, "size": "1024x1024", "seed": str(random.randint(1, 2147483646))},
         timeout=300,
     )
     if response.status_code == 401:
@@ -133,10 +196,15 @@ def main():
 
     print(f"Reference image validated ({len(reference_bytes)} bytes; {'JPEG' if is_jpeg else 'PNG'}).")
 
+    recent_style_ids = {item.get("style_id") for item in queue if item.get("style_id") and item.get("status") in ("pending", "published")}
+    available_styles = [style for style in STYLE_PRESETS if style["id"] not in recent_style_ids] or STYLE_PRESETS.copy()
+    selected_style = random.choice(available_styles)
+    prompt = PROMPT + "\n\nDistinct visual direction for this post: " + selected_style["prompt"] + ". Make the outfit, pose, setting, composition and lighting follow this concept."
+
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     ASSET_DIR.mkdir(parents=True, exist_ok=True)
     image_path = ASSET_DIR / f"portrait-{stamp}.jpg"
-    generate_portrait(api_key, reference_bytes, image_path)
+    generate_portrait(api_key, reference_bytes, image_path, prompt)
 
     caption = random.choice(CAPTIONS)
     queue.append({
@@ -145,6 +213,8 @@ def main():
         "status": "pending",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "generator": f"Pollinations/{MODEL}",
+        "style_id": selected_style["id"],
+        "style_name": selected_style["name"],
     })
     QUEUE_FILE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Generated a reference-guided portrait with Pollinations: {image_path.name}")
