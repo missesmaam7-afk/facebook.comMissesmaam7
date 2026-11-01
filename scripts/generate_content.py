@@ -27,22 +27,23 @@ CAPTIONS = [
 BATCH_SIZE = 4
 IMAGE_SIZE = "1024x1536"  # Full-resolution portrait orientation; saved without downscaling.
 
-PROMPT = """Create an ultra-photorealistic Indian fashion editorial photograph for the Missesmaam7 Facebook page. Use the uploaded face photo as the primary identity reference and create ONE single photograph only.
-CRITICAL IDENTITY PRESERVATION: show the same adult woman from the face reference. Preserve her recognizable facial identity, face shape, eyes, eyebrows, nose, lips, skin tone, age, and natural facial proportions. Do not substitute another person or change her ethnicity. Keep realistic pores, fine skin texture, natural asymmetry, and believable anatomy.
-WARDROBE AND LOOK: an elegant rich ruby-red traditional Indian saree with intricate fine gold floral embroidery and a matching red embroidered sleeveless blouse, graceful sheer red pallu with a detailed gold border, tasteful small traditional gold jhumka earrings and delicate gold bangles. The saree must be richly textured and realistically draped, sophisticated and graceful, with tasteful non-explicit styling.
-LOCATION AND ATMOSPHERE: an opulent pale-beige carved sandstone or ivory-marble heritage palace courtyard, ornate carved pillars and arches, leafy green garden, subtle red and pink flowers, elegant outdoor seating in the background. Warm late-afternoon golden sunlight, natural soft shadows, cinematic depth of field, premium Indian fashion magazine photography.
-PHOTOGRAPHY: ultra-photorealistic DSLR photograph, natural warm skin tones, realistic skin pores, detailed hair strands and fabric embroidery, sharp expressive eyes, 85mm portrait lens, shallow depth of field, balanced exposure, high dynamic range, premium editorial quality. Create a clean, believable real-life photograph, never an illustration or CGI.
-IMPORTANT OUTPUT: generate a single standalone full-size vertical portrait image, not a collage, grid, contact sheet, diptych, triptych, split-screen, or multi-panel layout. No text, captions, logos, watermarks, borders, frames, extra people, duplicate subjects, distorted anatomy, plastic skin, cartoon, illustration, or CGI. Exact identity matching cannot be guaranteed."""
+PROMPT = """Create ONE ultra-photorealistic standalone Indian fashion editorial photograph for every API request. Use the uploaded face image as the primary identity reference.
+IDENTITY LOCK: the woman must remain the same adult woman shown in the uploaded face reference. Preserve her recognizable facial identity, facial proportions, eyes, eyebrows, nose, lips, skin tone, age and natural asymmetry. Do not invent a different face or change her ethnicity. Realistic skin pores and natural texture; no beauty-filter plastic skin.
+MATCH THE PROVIDED OUTFIT REFERENCE EXACTLY IN ALL FOUR IMAGES: rich deep ruby-red traditional Indian saree, fine all-over gold floral embroidery, matching red sleeveless fitted blouse with the same delicate gold embroidered pattern, sheer red pallu with a prominent intricate gold embroidered border. Keep the saree colour, blouse design, embroidery, jewellery and styling consistent across the whole batch. Add small traditional gold jhumka earrings and delicate gold bangles. Elegant, tasteful Indian festive fashion styling.
+MATCH THE PROVIDED LOCATION REFERENCE: luxurious pale cream/beige carved sandstone or ivory-marble palace courtyard, ornate carved pillars and arches, leafy green garden, small red/pink flowers and subtle heritage seating. Keep this same palace-courtyard visual world in every image. Warm late-afternoon golden sunlight, natural shadows and soft cinematic background blur.
+PHOTOGRAPHIC QUALITY: real DSLR fashion photograph, warm natural skin tones, detailed individual hair strands and saree embroidery, sharp expressive eyes, realistic fabric drape, premium Indian fashion magazine editorial, 85mm portrait-lens look, shallow depth of field, balanced exposure, high detail.
+POSE VARIATION ONLY: use the per-image pose instruction to change body pose, expression, framing and camera angle. Do not change the woman's identity, saree colour/design, blouse, jewellery or overall palace courtyard setting.
+OUTPUT RULE: create exactly ONE separate full-size vertical portrait photograph per request. Never create a collage, grid, contact sheet, diptych, triptych, split screen, multi-panel image or duplicate subject. No text, captions, logos, watermarks, borders, frames, extra people, distorted anatomy, cartoon, illustration or CGI. Exact identity matching cannot be guaranteed."""
 
 STYLE_PRESETS = [
-    {"id":"red-saree-standing","name":"Red saree standing portrait","prompt":"full-length standing portrait beside an ornate carved palace pillar, one hand gently touching her hair, graceful direct gaze, entire saree and pallu visible"},
+    {"id":"red-saree-standing","name":"Red saree standing portrait","prompt":"full-length standing portrait beside a carved palace pillar, one hand gently touching her hair, graceful direct gaze, entire red saree and gold-bordered pallu visible"},
     {"id":"red-saree-seated","name":"Red saree seated courtyard","prompt":"seated gracefully on a carved sandstone courtyard bench, one elbow resting lightly and hand near cheek, warm gentle smile, medium-wide three-quarter composition"},
-    {"id":"red-saree-over-shoulder","name":"Red saree over-shoulder pose","prompt":"elegant over-the-shoulder three-quarter pose showing the embroidered blouse back and flowing red pallu, face turned naturally toward camera, garden courtyard softly blurred"},
-    {"id":"red-saree-pallu-pose","name":"Red saree pallu portrait","prompt":"standing near the carved arch while lightly arranging the sheer embroidered pallu, eyes softly lowered with a subtle smile, medium full-body composition"},
-    {"id":"red-saree-closeup","name":"Red saree close-up","prompt":"intimate head-and-shoulders beauty portrait, detailed natural face and gold jhumka earrings, red embroidered saree visible at shoulders, soft golden backlight"},
-    {"id":"red-saree-garden","name":"Red saree garden portrait","prompt":"three-quarter portrait in a lush palace garden with flowering plants, one hand resting lightly near hair, candid warm smile, elegant natural pose"},
-    {"id":"red-saree-profile","name":"Red saree side profile","prompt":"graceful side-profile portrait near an ivory carved pillar, face gently turned toward camera, flowing hair and gold-bordered red pallu catching warm sunlight"},
-    {"id":"red-saree-balcony","name":"Red saree heritage balcony","prompt":"full-length standing pose beside a carved heritage balcony railing, one hand resting lightly on the stone railing, palace garden in soft background"}
+    {"id":"red-saree-over-shoulder","name":"Red saree over-shoulder pose","prompt":"elegant over-the-shoulder three-quarter pose, face turned naturally toward camera, long hair falling down her back and the same red gold-embroidered pallu clearly visible"},
+    {"id":"red-saree-pallu-pose","name":"Red saree pallu pose","prompt":"standing near a carved arch while lightly arranging the sheer red embroidered pallu, eyes softly lowered with a subtle smile, medium full-body composition"},
+    {"id":"red-saree-closeup","name":"Red saree close-up","prompt":"intimate head-and-shoulders beauty portrait, natural expressive face and gold jhumka earrings, red embroidered saree visible at shoulders, soft golden backlight"},
+    {"id":"red-saree-garden","name":"Red saree garden portrait","prompt":"three-quarter portrait near leafy palace garden plants and subtle flowers, one hand resting lightly near hair, candid warm smile, elegant natural pose"},
+    {"id":"red-saree-profile","name":"Red saree side profile","prompt":"graceful side-profile portrait beside an ivory carved pillar, face gently turned toward camera, flowing hair and gold-bordered red pallu catching warm sunlight"},
+    {"id":"red-saree-balcony","name":"Red saree heritage balcony","prompt":"full-length standing pose beside a carved heritage balcony railing, one hand resting lightly on the stone railing, palace garden softly blurred behind her"}
 ]
 
 def generate_portrait(api_key: str, reference_bytes: bytes, out_path: Path, prompt: str) -> None:
@@ -168,17 +169,17 @@ def main():
     for index, selected_style in enumerate(selected_styles, start=1):
         prompt = (
             PROMPT
-            + "\\n\\nDistinct style for this image: "
+            + "\n\nPose and camera variation for this image: "
             + selected_style["prompt"]
             + ". Make this image visibly different from the other images in this batch. "
               "Keep the same reference identity, premium beauty-campaign photography, "
-              "full portrait framing, and natural realistic skin."
+              "same red saree outfit, same jewellery, same palace courtyard, and natural realistic skin."
         )
         image_path = ASSET_DIR / f"portrait-{stamp}-{index:02d}-{selected_style['id']}.jpg"
         print(f"Generating image {index}/{BATCH_SIZE}: {selected_style['name']}")
         generate_portrait(api_key, reference_bytes, image_path, prompt)
         queue.append({
-            "image": str(image_path.relative_to(ROOT)).replace("\\\\", "/"),
+            "image": str(image_path.relative_to(ROOT)).replace("\\", "/"),
             "caption": random.choice(CAPTIONS),
             "status": "pending",
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
