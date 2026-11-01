@@ -7,8 +7,9 @@ on:
   workflow_dispatch:
 
   schedule:
-    # 10:00 AM, 3:00 PM and 7:00 PM IST
-    - cron: "30 4,9,13 * * *"
+    # 10:07 AM, 3:07 PM and 7:07 PM IST (UTC: 04:37, 09:37, 13:37).
+    # Avoid exact-hour scheduling congestion on GitHub Actions.
+    - cron: "37 4,9,13 * * *"
 
 permissions:
   contents: write
