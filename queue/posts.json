@@ -207,7 +207,7 @@
   {
     "image": "assets/queue/portrait-20261101-005659-02-red-saree-seated.jpg",
     "caption": "Aaj ka din apne liye bhi rakho 🌷 Kabhi-kabhi chhoti si muskurahat aur khud ke liye thoda waqt hi kaafi hota hai. #SelfLove #PositiveVibes",
-    "status": "pending",
+    "status": "published",
     "generated_at_utc": "2026-11-01T00:57:21.354436+00:00",
     "generator": "Pollinations/black-forest-labs/flux.1-kontext-pro",
     "style_id": "red-saree-seated",
@@ -218,7 +218,9 @@
     "requested_image_size": "1024x1536",
     "actual_image_width": 880,
     "actual_image_height": 1184,
-    "image_size": "880x1184"
+    "image_size": "880x1184",
+    "facebook_post_id": "436135029576334_122231986928518204",
+    "published_at_utc": "2026-11-01T01:00:36.505153+00:00"
   },
   {
     "image": "assets/queue/portrait-20261101-005659-03-red-saree-profile.jpg",
