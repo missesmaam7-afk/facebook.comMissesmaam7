@@ -46,7 +46,7 @@ STYLE_PRESETS = [
     {"id":"red-saree-balcony","name":"Red saree heritage balcony","prompt":"full-length standing pose beside a carved heritage balcony railing, one hand resting lightly on the stone railing, palace garden softly blurred behind her"}
 ]
 
-def generate_portrait(api_key: str, reference_bytes: bytes, out_path: Path, prompt: str) -> None:
+def generate_portrait(api_key: str, reference_bytes: bytes, out_path: Path, prompt: str) -> tuple[int, int]:
     try:
         with Image.open(BytesIO(reference_bytes)) as im:
             fmt = im.format
@@ -93,10 +93,12 @@ def generate_portrait(api_key: str, reference_bytes: bytes, out_path: Path, prom
         with Image.open(BytesIO(image_bytes)) as im:
             rgb = im.convert("RGB")
             width, height = rgb.size
-            if width < 1024 or height < 1536:
-                raise ValueError(f"Provider returned {width}x{height}; expected at least 1024x1536 full-size portrait output.")
+            ratio = width / height if height else 0
+            if width < 800 or height < 1100 or not 0.68 <= ratio <= 0.82:
+                raise ValueError(f"Provider returned {width}x{height}; expected a standalone portrait of at least 800x1100 pixels.")
             rgb.save(out_path, format="JPEG", quality=95, subsampling=0, optimize=True)
-            print(f"Saved full-size image: {width}x{height} pixels (JPEG quality 95).")
+            print(f"Saved native dimensions: {width}x{height}; no resizing.")
+            return width, height
     except Exception as exc:
         raise RuntimeError("Pollinations response did not contain a valid image.") from exc
 
@@ -182,7 +184,7 @@ def main():
         )
         image_path = ASSET_DIR / f"portrait-{stamp}-{index:02d}-{selected_style['id']}.jpg"
         print(f"Generating image {index}/{BATCH_SIZE}: {selected_style['name']}")
-        generate_portrait(api_key, reference_bytes, image_path, prompt)
+        actual_width, actual_height = generate_portrait(api_key, reference_bytes, image_path, prompt)
         queue.append({
             "image": str(image_path.relative_to(ROOT)).replace("\\", "/"),
             "caption": random.choice(CAPTIONS),
@@ -194,7 +196,10 @@ def main():
             "batch_id": stamp,
             "batch_index": index,
             "batch_size": BATCH_SIZE,
-            "image_size": IMAGE_SIZE,
+            "requested_image_size": IMAGE_SIZE,
+            "actual_image_width": actual_width,
+            "actual_image_height": actual_height,
+            "image_size": f"{actual_width}x{actual_height}",
         })
         QUEUE_FILE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         # Gentle spacing between provider calls to reduce rate-limit/transient errors.
