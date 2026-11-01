@@ -174,9 +174,7 @@ def main():
     for index, selected_style in enumerate(selected_styles, start=1):
         prompt = (
             PROMPT
-            + "
-
-Pose and camera variation for this image: "
+            + "\n\nPose and camera variation for this image: "
             + selected_style["prompt"]
             + ". Make this image visibly different from the other images in this batch. "
               "Keep the same reference identity, premium beauty-campaign photography, "
@@ -198,14 +196,12 @@ Pose and camera variation for this image: "
             "batch_size": BATCH_SIZE,
             "image_size": IMAGE_SIZE,
         })
-        QUEUE_FILE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\
-", encoding="utf-8")
+        QUEUE_FILE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         # Gentle spacing between provider calls to reduce rate-limit/transient errors.
         if index < BATCH_SIZE:
             time.sleep(2)
     print(f"Generated {BATCH_SIZE} full-resolution, individually styled portraits in batch {stamp}.")
-    QUEUE_FILE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "
-", encoding="utf-8")
+    QUEUE_FILE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Batch queue saved with {BATCH_SIZE} full-size portraits; publisher will post one queued image per scheduled run.")
 
 if __name__ == "__main__":
