@@ -23,73 +23,25 @@ CAPTIONS = [
     "Khud par bharosa rakho 💗 Tumhari kahani apni jagah khaas hai. #Confidence #BeYourself",
 ]
 
-PROMPT = """Create a highly photorealistic, natural full-body lifestyle photograph for the Missesmaam7 Facebook page, using the uploaded photo as the primary identity reference.
-CRITICAL IDENTITY PRESERVATION: depict the same adult woman as in the reference. Preserve her recognizable facial identity, face shape, eyes, eyebrows, nose, lips, skin tone, age, and natural facial proportions. Do not change her identity, ethnicity, age, or blend her face with another person. Keep realistic skin pores, natural facial detail, and believable anatomy.
-VISUAL STYLE TARGET: match a candid premium DSLR lifestyle photograph: one adult Indian woman standing naturally in a beautiful real-world outdoor setting, preferably a lush rooftop terrace or garden with potted plants and greenery, warm soft daylight, gentle background depth, realistic shadows, natural colours, and uncluttered composition. Show her from head to toe with full outfit and feet visible; place her near the centre with comfortable space around her. Natural relaxed expression and believable casual pose, not a fashion runway pose.
-Vary the outfit, colour palette, pose, garden arrangement, camera distance, and background details for every post while keeping this same realistic everyday lifestyle-photo aesthetic. Use tasteful modest contemporary Indian casual clothing such as a simple top with a flowing skirt, kurta with palazzo, or elegant casual dress. Clothing should look naturally fitted and opaque. Barefoot only when it suits a safe home-terrace setting; otherwise simple flats or sandals.
-Photorealistic DSLR quality, natural skin texture, realistic hands and feet, accurate proportions, soft golden-hour or bright diffused daylight. No illustration, CGI, anime, beauty-filter skin, exaggerated body proportions, glamour retouching, text, captions, logos, watermarks, collages, borders, or extra people. Vertical 4:5 or portrait-oriented composition if supported; otherwise square 1:1 crop with the entire person safely inside frame. Prioritize facial resemblance and natural realism. Exact identity cannot be guaranteed."""
+PROMPT = """Create an ultra-photorealistic luxury beauty-campaign portrait for the Missesmaam7 Facebook page, using the uploaded photo as the primary identity reference.
+CRITICAL IDENTITY PRESERVATION: show the same adult woman from the reference photo. Preserve her recognizable facial identity, face shape, eyes, eyebrows, nose, lips, skin tone, age, and natural facial proportions. Do not change her ethnicity or turn her into a different person. Do not imitate a fictional or unrelated face. Keep realistic pores, fine skin texture, natural asymmetry, and believable anatomy.
+BEAUTY CAMPAIGN LOOK: front-facing or gentle three-quarter portrait, warm genuine smile with natural teeth when appropriate, expressive eyes, softly defined brows, natural glossy lips, subtle blush, refined understated earrings, elegant polished styling. Premium luxury fashion editorial, flattering soft studio lighting, warm creamy or softly coloured background, shallow depth of field, cinematic bokeh, high-end 85mm portrait-lens aesthetic, crisp eyes, realistic skin texture, refined HDR-like tonal detail without artificial smoothing.
+For every new post, vary the hairstyle arrangement, tasteful outfit and neckline, accessory, smile/expression, background tone, lighting direction, and camera framing while retaining this consistent premium beauty-campaign aesthetic and the same recognizable reference identity. Use tasteful, non-explicit clothing.
+Ultra-photorealistic DSLR finish, natural colour grading, detailed eyes and hair, realistic facial proportions. No text, captions, logos, watermarks, extra people, collage, borders, distortions, plastic skin, cartoon, illustration, or CGI. Exact identity matching cannot be guaranteed.""" 
 
 STYLE_PRESETS = [
-    {
-        "id": "garden",
-        "name": "Sunlit garden",
-        "prompt": "flowering garden, pastel floral outfit, morning sunlight, candid three-quarter pose"
-    },
-    {
-        "id": "heritage",
-        "name": "Heritage courtyard",
-        "prompt": "Indian haveli courtyard, teal traditional outfit, sandstone arches, late-afternoon light"
-    },
-    {
-        "id": "studio",
-        "name": "Minimal studio",
-        "prompt": "warm beige studio, ivory outfit, softbox lighting, elegant seated pose"
-    },
-    {
-        "id": "monsoon",
-        "name": "Monsoon window",
-        "prompt": "rainy window setting, sage outfit, diffused daylight, relaxed seated pose"
-    },
-    {
-        "id": "rooftop",
-        "name": "Golden-hour rooftop",
-        "prompt": "city rooftop at golden hour, rose outfit, skyline bokeh, candid portrait"
-    },
-    {
-        "id": "coastal",
-        "name": "Coastal breeze",
-        "prompt": "coastal promenade, powder-blue outfit, soft seaside daylight, relaxed pose"
-    },
-    {
-        "id": "cafe",
-        "name": "Book cafe",
-        "prompt": "warm book cafe, maroon outfit, window light, candid lifestyle portrait"
-    },
-    {
-        "id": "botanical",
-        "name": "Botanical conservatory",
-        "prompt": "glass conservatory, tropical plants, cream-and-green outfit, filtered daylight"
-    },
-    {
-        "id": "festive",
-        "name": "Festive lantern evening",
-        "prompt": "festive courtyard, distant warm lanterns, wine-coloured traditional outfit, evening portrait"
-    },
-    {
-        "id": "urban",
-        "name": "Pastel urban editorial",
-        "prompt": "pastel modern architecture, lavender outfit, bright soft daylight, fashion editorial"
-    },
-    {
-        "id": "terrace",
-        "name": "Terrace morning",
-        "prompt": "sunlit terrace, potted plants, peach outfit, fresh morning light, smiling candid pose"
-    },
-    {
-        "id": "gallery",
-        "name": "Modern art gallery",
-        "prompt": "minimal art gallery, charcoal outfit, directional lighting, poised editorial portrait"
-    }
+    {"id":"cream-pearl","name":"Cream studio and pearls","prompt":"warm creamy studio background, ivory satin elegant outfit, minimal pearl earrings, soft front studio light, gentle radiant smile, close beauty portrait"},
+    {"id":"champagne-glow","name":"Champagne luxury campaign","prompt":"soft champagne-beige background, champagne satin outfit, delicate gold earrings, warm diffused key light, elegant confident smile, head-and-shoulders framing"},
+    {"id":"rose-editorial","name":"Rose editorial","prompt":"muted dusty-rose studio background, refined blush-pink outfit, tiny crystal earrings, soft peach blush, luminous side lighting, close-up editorial portrait"},
+    {"id":"ivory-window","name":"Ivory window light","prompt":"ivory cream background with soft window-light falloff, elegant white outfit, subtle pearl studs, natural candid smile, three-quarter beauty portrait"},
+    {"id":"mocha-luxe","name":"Mocha luxury portrait","prompt":"warm mocha-brown seamless background, sophisticated cocoa outfit, delicate gold jewellery, soft cinematic key light, poised expression, 85mm headshot"},
+    {"id":"soft-lilac","name":"Soft lilac beauty","prompt":"pale lilac studio background, elegant lavender outfit, minimal silver earrings, soft flattering studio light, bright natural smile, close portrait"},
+    {"id":"sage-elegance","name":"Sage elegance","prompt":"muted sage-green background, refined cream outfit, understated earrings, luminous diffused light, relaxed warm smile, head-and-shoulders composition"},
+    {"id":"midnight-editorial","name":"Midnight editorial","prompt":"deep muted navy studio background, elegant black satin outfit with tasteful neckline, tiny pearl earrings, controlled softbox lighting, sophisticated expression"},
+    {"id":"peach-campaign","name":"Peach beauty campaign","prompt":"warm pale-peach background, elegant peach-toned outfit, subtle gold studs, soft peach blush, radiant genuine smile, close luxury beauty framing"},
+    {"id":"silver-softbox","name":"Silver softbox portrait","prompt":"soft warm-grey studio background, elegant dove-grey outfit, minimal silver earrings, clean softbox catchlights, polished natural smile, crisp close-up"},
+    {"id":"sunlit-cream","name":"Sunlit cream editorial","prompt":"sunlit creamy beige background, elegant pastel outfit, delicate pearl accessories, warm natural sunlight, relaxed joyful smile, premium fashion portrait"},
+    {"id":"classic-white","name":"Classic white campaign","prompt":"clean warm-white studio background, refined white satin outfit, tiny pearl earrings, soft frontal beauty lighting, serene genuine smile, close-up portrait"}
 ]
 
 def generate_portrait(api_key: str, reference_bytes: bytes, out_path: Path, prompt: str) -> None:
@@ -200,7 +152,7 @@ def main():
     recent_style_ids = {item.get("style_id") for item in queue if item.get("style_id") and item.get("status") in ("pending", "published")}
     available_styles = [style for style in STYLE_PRESETS if style["id"] not in recent_style_ids] or STYLE_PRESETS.copy()
     selected_style = random.choice(available_styles)
-    prompt = PROMPT + "\n\nDistinct visual direction for this post: " + selected_style["prompt"] + ". Make the outfit, pose, setting, composition and lighting follow this concept."
+    prompt = PROMPT + "\n\nUnique campaign direction for this post: " + selected_style["prompt"] + ". Make this image visibly distinct from recent posts while preserving the same reference identity and luxury beauty-campaign look."
 
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     ASSET_DIR.mkdir(parents=True, exist_ok=True)
