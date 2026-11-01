@@ -159,7 +159,7 @@
   {
     "image": "assets/queue/portrait-20261101-003553-03-cream-pearl.jpg",
     "caption": "Aaj ka din apne liye bhi rakho 🌷 Kabhi-kabhi chhoti si muskurahat aur khud ke liye thoda waqt hi kaafi hota hai. #SelfLove #PositiveVibes",
-    "status": "pending",
+    "status": "published",
     "generated_at_utc": "2026-11-01T00:36:22.689057+00:00",
     "generator": "Pollinations/black-forest-labs/flux.1-kontext-pro",
     "style_id": "cream-pearl",
@@ -167,7 +167,9 @@
     "batch_id": "20261101-003553",
     "batch_index": 3,
     "batch_size": 4,
-    "image_size": "1024x1536"
+    "image_size": "1024x1536",
+    "facebook_post_id": "436135029576334_122231985614518204",
+    "published_at_utc": "2026-11-01T00:44:56.558739+00:00"
   },
   {
     "image": "assets/queue/portrait-20261101-003553-04-rose-editorial.jpg",
