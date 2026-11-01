@@ -91,7 +91,12 @@ def generate_portrait(api_key: str, reference_bytes: bytes, out_path: Path, prom
 
     try:
         with Image.open(BytesIO(image_bytes)) as im:
-            rgb = im.convert("RGB")\n            width, height = rgb.size\n            if width < 1024 or height < 1536:\n                raise ValueError(f"Provider returned {width}x{height}; expected at least 1024x1536 full-size portrait output.")\n            rgb.save(out_path, format="JPEG", quality=95, subsampling=0, optimize=True)\n            print(f"Saved full-size image: {width}x{height} pixels (JPEG quality 95).")
+            rgb = im.convert("RGB")
+            width, height = rgb.size
+            if width < 1024 or height < 1536:
+                raise ValueError(f"Provider returned {width}x{height}; expected at least 1024x1536 full-size portrait output.")
+            rgb.save(out_path, format="JPEG", quality=95, subsampling=0, optimize=True)
+            print(f"Saved full-size image: {width}x{height} pixels (JPEG quality 95).")
     except Exception as exc:
         raise RuntimeError("Pollinations response did not contain a valid image.") from exc
 
@@ -169,7 +174,9 @@ def main():
     for index, selected_style in enumerate(selected_styles, start=1):
         prompt = (
             PROMPT
-            + "\n\nPose and camera variation for this image: "
+            + "
+
+Pose and camera variation for this image: "
             + selected_style["prompt"]
             + ". Make this image visibly different from the other images in this batch. "
               "Keep the same reference identity, premium beauty-campaign photography, "
@@ -191,12 +198,14 @@ def main():
             "batch_size": BATCH_SIZE,
             "image_size": IMAGE_SIZE,
         })
-        QUEUE_FILE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+        QUEUE_FILE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\
+", encoding="utf-8")
         # Gentle spacing between provider calls to reduce rate-limit/transient errors.
         if index < BATCH_SIZE:
             time.sleep(2)
     print(f"Generated {BATCH_SIZE} full-resolution, individually styled portraits in batch {stamp}.")
-    QUEUE_FILE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    QUEUE_FILE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "
+", encoding="utf-8")
     print(f"Batch queue saved with {BATCH_SIZE} full-size portraits; publisher will post one queued image per scheduled run.")
 
 if __name__ == "__main__":
