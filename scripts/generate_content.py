@@ -159,12 +159,11 @@ def main():
     }
     available_styles = [style for style in STYLE_PRESETS if style["id"] not in recent_style_ids]
     if len(available_styles) < BATCH_SIZE:
-        # Refill from the full pool, while keeping this batch itself unique.
-        used_in_batch = set()
-        while len(available_styles) < BATCH_SIZE:
-            candidate = random.choice([s for s in STYLE_PRESETS if s["id"] not in used_in_batch])
-            available_styles.append(candidate)
-            used_in_batch.add(candidate["id"])
+        # If the recent-history filter leaves too few options, refill with styles
+        # not already selected for this batch. No duplicate styles in one batch.
+        available_ids = {style["id"] for style in available_styles}
+        refill = [style for style in STYLE_PRESETS if style["id"] not in available_ids]
+        available_styles.extend(refill)
     selected_styles = random.sample(available_styles, BATCH_SIZE)
 
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
@@ -194,12 +193,13 @@ def main():
             "batch_size": BATCH_SIZE,
             "image_size": IMAGE_SIZE,
         })
+        QUEUE_FILE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
         # Gentle spacing between provider calls to reduce rate-limit/transient errors.
         if index < BATCH_SIZE:
             time.sleep(2)
     print(f"Generated {BATCH_SIZE} full-resolution, individually styled portraits in batch {stamp}.")
     QUEUE_FILE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Generated a reference-guided portrait with Pollinations: {image_path.name}")
+    print(f"Batch queue saved with {BATCH_SIZE} full-size portraits; publisher will post one queued image per scheduled run.")
 
 if __name__ == "__main__":
     main()
