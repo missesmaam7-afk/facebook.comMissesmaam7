@@ -42,8 +42,10 @@
   {
     "image": "assets/queue/portrait-20261031-235613.jpg",
     "caption": "Aaj ka din apne liye bhi rakho 🌷 Kabhi-kabhi chhoti si muskurahat aur khud ke liye thoda waqt hi kaafi hota hai. #SelfLove #PositiveVibes",
-    "status": "pending",
+    "status": "published",
     "generated_at_utc": "2026-10-31T23:56:21.631696+00:00",
-    "generator": "Pollinations/black-forest-labs/flux.1-kontext-pro"
+    "generator": "Pollinations/black-forest-labs/flux.1-kontext-pro",
+    "facebook_post_id": "436135029576334_122231982638518204",
+    "published_at_utc": "2026-11-01T00:21:34.846035+00:00"
   }
 ]
