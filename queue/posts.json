@@ -125,5 +125,59 @@
     "style_name": "Ivory window light",
     "facebook_post_id": "436135029576334_122231984354518204",
     "published_at_utc": "2026-11-01T00:32:28.947981+00:00"
+  },
+  {
+    "image": "assets/queue/portrait-20261101-003553-01-champagne-luxe.jpg",
+    "caption": "Aaj ka din apne liye bhi rakho 🌷 Kabhi-kabhi chhoti si muskurahat aur khud ke liye thoda waqt hi kaafi hota hai. #SelfLove #PositiveVibes",
+    "status": "published",
+    "generated_at_utc": "2026-11-01T00:36:01.488861+00:00",
+    "generator": "Pollinations/black-forest-labs/flux.1-kontext-pro",
+    "style_id": "champagne-luxe",
+    "style_name": "Champagne luxury",
+    "batch_id": "20261101-003553",
+    "batch_index": 1,
+    "batch_size": 4,
+    "image_size": "1024x1536",
+    "facebook_post_id": "436135029576334_122231984750518204",
+    "published_at_utc": "2026-11-01T00:36:36.083908+00:00"
+  },
+  {
+    "image": "assets/queue/portrait-20261101-003553-02-silver-softbox.jpg",
+    "caption": "Apni khushi ko waqt do ✨ Har din ek nayi shuruaat ka mauka deta hai. #DailyThoughts #GoodVibes",
+    "status": "pending",
+    "generated_at_utc": "2026-11-01T00:36:11.878006+00:00",
+    "generator": "Pollinations/black-forest-labs/flux.1-kontext-pro",
+    "style_id": "silver-softbox",
+    "style_name": "Silver softbox portrait",
+    "batch_id": "20261101-003553",
+    "batch_index": 2,
+    "batch_size": 4,
+    "image_size": "1024x1536"
+  },
+  {
+    "image": "assets/queue/portrait-20261101-003553-03-cream-pearl.jpg",
+    "caption": "Aaj ka din apne liye bhi rakho 🌷 Kabhi-kabhi chhoti si muskurahat aur khud ke liye thoda waqt hi kaafi hota hai. #SelfLove #PositiveVibes",
+    "status": "pending",
+    "generated_at_utc": "2026-11-01T00:36:22.689057+00:00",
+    "generator": "Pollinations/black-forest-labs/flux.1-kontext-pro",
+    "style_id": "cream-pearl",
+    "style_name": "Cream studio and pearls",
+    "batch_id": "20261101-003553",
+    "batch_index": 3,
+    "batch_size": 4,
+    "image_size": "1024x1536"
+  },
+  {
+    "image": "assets/queue/portrait-20261101-003553-04-rose-editorial.jpg",
+    "caption": "Chhoti khushiyan, khoobsurat pal 🌸 Aaj ek pal apne naam karo. #LifeMoments #Smile",
+    "status": "pending",
+    "generated_at_utc": "2026-11-01T00:36:32.550708+00:00",
+    "generator": "Pollinations/black-forest-labs/flux.1-kontext-pro",
+    "style_id": "rose-editorial",
+    "style_name": "Rose editorial",
+    "batch_id": "20261101-003553",
+    "batch_index": 4,
+    "batch_size": 4,
+    "image_size": "1024x1536"
   }
 ]
