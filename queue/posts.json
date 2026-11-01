@@ -225,7 +225,7 @@
   {
     "image": "assets/queue/portrait-20261101-005659-03-red-saree-profile.jpg",
     "caption": "Apni khushi ko waqt do ✨ Har din ek nayi shuruaat ka mauka deta hai. #DailyThoughts #GoodVibes",
-    "status": "pending",
+    "status": "published",
     "generated_at_utc": "2026-11-01T00:57:32.514502+00:00",
     "generator": "Pollinations/black-forest-labs/flux.1-kontext-pro",
     "style_id": "red-saree-profile",
@@ -236,7 +236,9 @@
     "requested_image_size": "1024x1536",
     "actual_image_width": 880,
     "actual_image_height": 1184,
-    "image_size": "880x1184"
+    "image_size": "880x1184",
+    "facebook_post_id": "436135029576334_122231987510518204",
+    "published_at_utc": "2026-11-01T01:09:29.335769+00:00"
   },
   {
     "image": "assets/queue/portrait-20261101-005659-04-red-saree-over-shoulder.jpg",
