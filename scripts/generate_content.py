@@ -25,15 +25,15 @@ CAPTIONS = [
 ]
 
 BATCH_SIZE = 4
-IMAGE_SIZE = "1024x1536"  # Full-resolution portrait orientation; saved without downscaling.
+IMAGE_SIZE = "1024x1536"  # Request full-size 2:3 portrait output; never resize/downscale the returned image.
 
 PROMPT = """Create ONE ultra-photorealistic standalone Indian fashion editorial photograph for every API request. Use the uploaded face image as the primary identity reference.
 IDENTITY LOCK: the woman must remain the same adult woman shown in the uploaded face reference. Preserve her recognizable facial identity, facial proportions, eyes, eyebrows, nose, lips, skin tone, age and natural asymmetry. Do not invent a different face or change her ethnicity. Realistic skin pores and natural texture; no beauty-filter plastic skin.
 MATCH THE PROVIDED OUTFIT REFERENCE EXACTLY IN ALL FOUR IMAGES: rich deep ruby-red traditional Indian saree, fine all-over gold floral embroidery, matching red sleeveless fitted blouse with the same delicate gold embroidered pattern, sheer red pallu with a prominent intricate gold embroidered border. Keep the saree colour, blouse design, embroidery, jewellery and styling consistent across the whole batch. Add small traditional gold jhumka earrings and delicate gold bangles. Elegant, tasteful Indian festive fashion styling.
 MATCH THE PROVIDED LOCATION REFERENCE: luxurious pale cream/beige carved sandstone or ivory-marble palace courtyard, ornate carved pillars and arches, leafy green garden, small red/pink flowers and subtle heritage seating. Keep this same palace-courtyard visual world in every image. Warm late-afternoon golden sunlight, natural shadows and soft cinematic background blur.
-PHOTOGRAPHIC QUALITY: real DSLR fashion photograph, warm natural skin tones, detailed individual hair strands and saree embroidery, sharp expressive eyes, realistic fabric drape, premium Indian fashion magazine editorial, 85mm portrait-lens look, shallow depth of field, balanced exposure, high detail.
+PHOTOGRAPHIC QUALITY: bold, striking, premium real-DSLR fashion photograph. Use rich ruby-red and gold tones, vivid but natural garden greens and flower colours, punchy contrast, deep clean shadows, bright luminous highlights, crisp fine details, sharp expressive eyes, detailed individual hair strands and intricate saree embroidery. Make the image visually powerful, vibrant, colourful and eye-catching without oversaturation or artificial skin. Warm natural skin tones, realistic fabric drape, premium Indian fashion magazine editorial, 85mm portrait-lens look, shallow depth of field, high dynamic range, tack-sharp subject.
 POSE VARIATION ONLY: use the per-image pose instruction to change body pose, expression, framing and camera angle. Do not change the woman's identity, saree colour/design, blouse, jewellery or overall palace courtyard setting.
-OUTPUT RULE: create exactly ONE separate full-size vertical portrait photograph per request. Never create a collage, grid, contact sheet, diptych, triptych, split screen, multi-panel image or duplicate subject. No text, captions, logos, watermarks, borders, frames, extra people, distorted anatomy, cartoon, illustration or CGI. Exact identity matching cannot be guaranteed."""
+OUTPUT RULE: create exactly ONE separate FULL-SIZE, high-resolution vertical portrait photograph per request at the requested 1024x1536 portrait size (2:3 ratio). Preserve the original returned pixel dimensions exactly; never crop, shrink, downscale, create a thumbnail, or compress to a smaller resolution. Save at high JPEG quality (95) while retaining the full dimensions. Never create a collage, grid, contact sheet, diptych, triptych, split screen, multi-panel image or duplicate subject. No text, captions, logos, watermarks, borders, frames, extra people, distorted anatomy, cartoon, illustration or CGI. Exact identity matching cannot be guaranteed."""
 
 STYLE_PRESETS = [
     {"id":"red-saree-standing","name":"Red saree standing portrait","prompt":"full-length standing portrait beside a carved palace pillar, one hand gently touching her hair, graceful direct gaze, entire red saree and gold-bordered pallu visible"},
@@ -91,7 +91,7 @@ def generate_portrait(api_key: str, reference_bytes: bytes, out_path: Path, prom
 
     try:
         with Image.open(BytesIO(image_bytes)) as im:
-            im.convert("RGB").save(out_path, format="JPEG", quality=94, optimize=True)
+            rgb = im.convert("RGB")\n            width, height = rgb.size\n            if width < 1024 or height < 1536:\n                raise ValueError(f"Provider returned {width}x{height}; expected at least 1024x1536 full-size portrait output.")\n            rgb.save(out_path, format="JPEG", quality=95, subsampling=0, optimize=True)\n            print(f"Saved full-size image: {width}x{height} pixels (JPEG quality 95).")
     except Exception as exc:
         raise RuntimeError("Pollinations response did not contain a valid image.") from exc
 
